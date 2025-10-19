@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useNotes } from "@/lib/api";
+import { useNotes } from "@/lib/api/clientApi";
 import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
 import SearchBox from "@/components/SearchBox/SearchBox";

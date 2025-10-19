@@ -1,5 +1,5 @@
 import NoteDetailsClient from "./NoteDetails.client";
-import { fetchNoteById } from "@/lib/api";
+import { fetchNoteById } from "@/lib/api/clientApi";
 import type { Metadata } from "next";
 import type { Note } from "@/types/note";
 
@@ -13,7 +13,7 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const { id } = resolvedParams;
 
-  const note: Note = await fetchNoteById(id);
+  const note: Note | null = await fetchNoteById(id);
 
   const title = note?.title ? `NoteHub – ${note.title}` : "NoteHub – Нотатка";
   const description = note?.content
