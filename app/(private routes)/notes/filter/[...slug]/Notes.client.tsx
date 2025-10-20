@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import { useNotes } from "@/lib/api/clientApi";
-import NoteList from "@/components/NoteList/NoteList";
-import Pagination from "@/components/Pagination/Pagination";
-import SearchBox from "@/components/SearchBox/SearchBox";
+import NoteList from "@/componentsts/NoteList/NoteList";
+import Pagination from "@/componentsts/Pagination/Pagination";
+import SearchBox from "@/componentsts/SearchBox/SearchBox";
 import Link from "next/link";
 import css from "./Notes.client.module.css";
 

@@ -1,4 +1,4 @@
-import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import AuthProvider from "@/componentsts/AuthProvider/AuthProvider";
 
 export default function PrivateLayout({
   children,

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
-import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
-import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import Header from "@/componentsts/Header/Header";
+import Footer from "@/componentsts/Footer/Footer";
+import TanStackProvider from "@/componentsts/TanStackProvider/TanStackProvider";
+import AuthProvider from "@/componentsts/AuthProvider/AuthProvider";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
