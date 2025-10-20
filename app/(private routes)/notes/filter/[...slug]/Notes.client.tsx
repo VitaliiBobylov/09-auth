@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import { useNotes } from "@/lib/api/clientApi";
 import NoteList from "@/components/NoteList/NoteList";
@@ -9,18 +9,26 @@ import SearchBox from "@/components/SearchBox/SearchBox";
 import Link from "next/link";
 import css from "./Notes.client.module.css";
 
-export default function NotesClient({ tag }: { tag?: string }) {
+interface NotesClientProps {
+  tag?: string;
+}
+
+export default function NotesClient({ tag }: NotesClientProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-
   const [debouncedSearch] = useDebounce(search, 500);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   const { data, isLoading, isError } = useNotes(debouncedSearch, page, tag);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load notes.</p>;
 
-  const hasNotes = data?.notes && data.notes.length > 0;
+  const notes = data?.notes ?? [];
+  const hasNotes = notes.length > 0;
 
   return (
     <div className={css.container}>
@@ -33,10 +41,10 @@ export default function NotesClient({ tag }: { tag?: string }) {
 
       {hasNotes ? (
         <>
-          <NoteList notes={data!.notes} />
+          <NoteList notes={notes} />
           <Pagination
             currentPage={page}
-            totalPages={data!.totalPages}
+            totalPages={data?.totalPages ?? 1}
             onPageChange={setPage}
           />
         </>

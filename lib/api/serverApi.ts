@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { api } from "@/lib/api/api";
 import { User } from "@/types/user";
 import { Note } from "@/types/note";
+import { AxiosResponse } from "axios";
 
 export async function getMeServer(): Promise<User> {
   const cookieStore = await cookies();
@@ -13,14 +14,14 @@ export async function getMeServer(): Promise<User> {
   return res.data;
 }
 
-export async function checkSessionServer(): Promise<User> {
+export async function checkSessionServer(): Promise<AxiosResponse<User>> {
   const cookieStore = await cookies();
 
   const res = await api.get<User>("/auth/session", {
     headers: { Cookie: cookieStore.toString() },
     withCredentials: true,
   });
-  return res.data;
+  return res;
 }
 
 export async function fetchNotesServer(
