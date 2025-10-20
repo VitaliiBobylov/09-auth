@@ -1,17 +1,60 @@
-import { NextResponse } from "next/server";
-import { api } from "@/lib/api/api";
+export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
+import { NextResponse } from "next/server";
+import { api } from "../../api";
+import { cookies } from "next/headers";
+import { logErrorResponse } from "../../_utils/utils";
+import { isAxiosError } from "axios";
+
+export async function GET() {
   try {
-    const cookieHeader = req.headers.get("cookie") || "";
+    const cookieStore = await cookies();
 
     const res = await api.get("/users/me", {
-      headers: { Cookie: cookieHeader },
-      withCredentials: true,
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
     });
-
     return NextResponse.json(res.data, { status: res.status });
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      logErrorResponse(error.response?.data);
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status }
+      );
+    }
+    logErrorResponse({ message: (error as Error).message });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const cookieStore = await cookies();
+    const body = await request.json();
+
+    const res = await api.patch("/users/me", body, {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    });
+    return NextResponse.json(res.data, { status: res.status });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      logErrorResponse(error.response?.data);
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status }
+      );
+    }
+    logErrorResponse({ message: (error as Error).message });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

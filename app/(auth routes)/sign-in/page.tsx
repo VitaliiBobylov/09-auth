@@ -3,24 +3,39 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 import css from "./page.module.css";
 
 export default function SignInPage() {
   const [error, setError] = useState("");
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+
     const form = e.currentTarget;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value;
     const password = (form.elements.namedItem("password") as HTMLInputElement)
       .value;
 
     try {
-      await login(email, password);
+      const user = await login(email, password);
+
+      setUser({
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar,
+      });
+
       router.push("/profile");
-    } catch {
-      setError("Invalid email or password");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Invalid email or password");
+      }
     }
   };
 

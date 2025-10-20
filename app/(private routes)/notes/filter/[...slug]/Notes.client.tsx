@@ -20,6 +20,8 @@ export default function NotesClient({ tag }: { tag?: string }) {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load notes.</p>;
 
+  const hasNotes = data?.notes && data.notes.length > 0;
+
   return (
     <div className={css.container}>
       <div className={css.searchAndButton}>
@@ -29,13 +31,18 @@ export default function NotesClient({ tag }: { tag?: string }) {
         </Link>
       </div>
 
-      <NoteList notes={data?.notes ?? []} />
-
-      <Pagination
-        currentPage={page}
-        totalPages={data?.totalPages ?? 1}
-        onPageChange={setPage}
-      />
+      {hasNotes ? (
+        <>
+          <NoteList notes={data!.notes} />
+          <Pagination
+            currentPage={page}
+            totalPages={data!.totalPages}
+            onPageChange={setPage}
+          />
+        </>
+      ) : (
+        <p>No notes found.</p>
+      )}
     </div>
   );
 }

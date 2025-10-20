@@ -1,5 +1,5 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { fetchNotes } from "@/lib/api/clientApi";
+import { fetchNotesServer } from "@/lib/api/serverApi";
 import getQueryClient from "@/lib/getQueryClient";
 import NotesClient from "./Notes.client";
 import type { Metadata } from "next";
@@ -24,7 +24,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://08-zustand-roan.vercel.app/notes/filter/${tag}`,
+      url: `https://09-auth-r6k6.vercel.app/notes/filter/${tag}`,
       images: [
         {
           url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
@@ -46,7 +46,7 @@ export default async function NotesPage({ params }: NotesPageProps) {
 
   await queryClient.prefetchQuery({
     queryKey: ["notes", { search: "", page: 1, tag }],
-    queryFn: () => fetchNotes("", 1, tag),
+    queryFn: () => fetchNotesServer("", 1, tag),
   });
 
   const dehydratedState = dehydrate(queryClient);

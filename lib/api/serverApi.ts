@@ -1,21 +1,34 @@
 import { cookies } from "next/headers";
+import { api } from "@/lib/api/api";
 import { User } from "@/types/user";
+import { Note } from "@/types/note";
 
-const BASE_URL = "https://notehub-api.goit.study";
+export async function getMeServer(): Promise<User> {
+  const cookieStore = await cookies();
 
-export async function getMeServer(): Promise<User | null> {
-  const cookieStore = cookies();
-  const res = await fetch(`${BASE_URL}/users/me`, {
+  const res = await api.get<User>("/users/me", {
     headers: { Cookie: cookieStore.toString() },
-    credentials: "include",
+    withCredentials: true,
   });
-
-  if (!res.ok) return null;
-  return res.json();
+  return res.data;
 }
 
-export async function fetchNotesServer(search = "", page = 1, tag?: string) {
-  const cookieStore = cookies();
+export async function checkSessionServer(): Promise<User> {
+  const cookieStore = await cookies();
+
+  const res = await api.get<User>("/auth/session", {
+    headers: { Cookie: cookieStore.toString() },
+    withCredentials: true,
+  });
+  return res.data;
+}
+
+export async function fetchNotesServer(
+  search = "",
+  page = 1,
+  tag?: string
+): Promise<{ totalPages: number; notes: Note[] }> {
+  const cookieStore = await cookies();
   const params = new URLSearchParams({
     search,
     page: page.toString(),
@@ -23,11 +36,22 @@ export async function fetchNotesServer(search = "", page = 1, tag?: string) {
   });
   if (tag && tag !== "All") params.append("tag", tag);
 
-  const res = await fetch(`${BASE_URL}/notes?${params}`, {
-    headers: { Cookie: cookieStore.toString() },
-    credentials: "include",
-  });
+  const res = await api.get<{ totalPages: number; notes: Note[] }>(
+    `/notes?${params.toString()}`,
+    {
+      headers: { Cookie: cookieStore.toString() },
+      withCredentials: true,
+    }
+  );
+  return res.data;
+}
 
-  if (!res.ok) return [];
-  return res.json();
+export async function fetchNoteByIdServer(id: string): Promise<Note> {
+  const cookieStore = await cookies();
+
+  const res = await api.get<Note>(`/notes/${id}`, {
+    headers: { Cookie: cookieStore.toString() },
+    withCredentials: true,
+  });
+  return res.data;
 }
